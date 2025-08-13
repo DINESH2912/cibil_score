@@ -1,11 +1,25 @@
-# main_app/models.py
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
-from decimal import Decimal
 import uuid
 
 def generate_id():
-    return uuid.uuid4().hex  # This gives a 32-character hex string without hyphens
+    return uuid.uuid4().hex  # 32-char hex without hyphens
+
+# NEW: Bank model for API-key authentication
+class Bank(models.Model):
+    id = models.CharField(primary_key=True, max_length=32, editable=False, default=generate_id)
+    name = models.CharField(max_length=255, unique=True)
+    # NOTE: Keep plain for simplicity. For production, store a hash instead.
+    api_secret_key = models.CharField(max_length=128, unique=True)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = "banks"
+        indexes = [models.Index(fields=["name", "is_active"])]
+
+    def __str__(self):
+        return self.name
 
 class Customer(models.Model):
     id = models.CharField(primary_key=True, max_length=32, editable=False, default=generate_id)
@@ -207,7 +221,6 @@ class CibilScore(models.Model):
     
     def save(self, *args, **kwargs):
         if self.is_latest:
-            # Set all other scores for this customer to not latest
             CibilScore.objects.filter(customer=self.customer, is_latest=True).update(is_latest=False)
         super().save(*args, **kwargs)
     

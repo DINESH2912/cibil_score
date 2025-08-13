@@ -1,412 +1,211 @@
-# views.py
-from rest_framework import status, generics
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from django.shortcuts import get_object_or_404
-from django.db import transaction
+import json
+import jwt
 from datetime import datetime, timedelta
-from .models import (
-    Customer, BankAccount, CreditCard, Loan, 
-    PaymentHistory, CibilScore, CibilReport
-)
-from .serializers import (
-    CustomerSerializer, CibilScoreSerializer, CibilReportSerializer,
-    CibilScoreRequestSerializer, BankAccountSerializer,
-    CreditCardSerializer, LoanSerializer, PaymentHistorySerializer
-)
-from .cibil_calculator import DynamicCibilScoreCalculator  # Import the new calculator
+import requests
+from django.conf import settings
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 
-# from .cibil_calculator import  CibilScoreCalculator
-
-class CustomerViewSet(generics.ListCreateAPIView):
-    queryset = Customer.objects.all()
-    serializer_class = CustomerSerializer
-    permission_classes = [AllowAny]
-
-class CustomerDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Customer.objects.all()
-    serializer_class = CustomerSerializer
-    lookup_field = 'pan_card_number'
-    permission_classes = [AllowAny]
+SECRET_KEY = getattr(settings, "JWT_SECRET_KEY", "supersecret")  # for signing JWTs
+TOKEN_EXPIRY_MINUTES = 30
 
 
-@api_view(['POST'])
-@permission_classes([AllowAny])
-def check_dynamic_cibil_score(request):
-    """
-    Enhanced endpoint to check CIBIL score with custom weight percentages.
-    Supports fully dynamic scoring with user-defined factor weights.
-    """
+@csrf_exempt
+def auth_token(request):
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Only POST method allowed'}, status=405)
+
+    # Step 1: Parse JSON body
+    try:
+        data = json.loads(request.body.decode('utf-8'))
+    except json.JSONDecodeError:
+        return JsonResponse({'error': 'Invalid JSON in request body'}, status=400)
+
+    pan_number = data.get('pan_card_number')
+    if not pan_number:
+        return JsonResponse({'error': 'PAN card number required in body'}, status=400)
+
+    # Step 2: Create JWT payload
+    payload = {
+        "pan_card_number": pan_number,
+        "exp": datetime.utcnow() + timedelta(minutes=TOKEN_EXPIRY_MINUTES)
+    }
+
+    # Step 3: Generate token
+    token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
+
+    # Step 4: Return token
+    return JsonResponse({
+        "success": True,
+        "token": token,
+        "expires_in_minutes": TOKEN_EXPIRY_MINUTES
+    })
+# ---------------- CIBIL CHECK ENDPOINT ----------------
+@csrf_exempt
+def calculate_cibil_score(request):
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Only POST method allowed'}, status=405)
+
+    # Step 1: Check Bearer token
+    auth_header = request.headers.get('Authorization')
+    if not auth_header or not auth_header.startswith('Bearer '):
+        return JsonResponse({'error': 'Bearer token required'}, status=401)
+
+    token = auth_header.split(' ')[1]
     
-    # Extract data from request
-    pan_card_number = request.data.get('pan_card_number')
-    custom_weights = request.data.get('custom_weights', {})
+    try:
+        decoded = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+        bank_name = decoded.get("bank_name")
+    except jwt.ExpiredSignatureError:
+        return JsonResponse({'error': 'Token expired'}, status=401)
+    except jwt.InvalidTokenError:
+        return JsonResponse({'error': 'Invalid token'}, status=401)
+
+    # Step 2: Parse request JSON
+    try:
+        data = json.loads(request.body.decode('utf-8'))
+    except json.JSONDecodeError:
+        return JsonResponse({'error': 'Invalid JSON in request body'}, status=400)
+
+    pan_number = data.get('panNumber')
+    print(pan_number)
     
-    # Validate PAN card number
-    if not pan_card_number:
-        return Response(
-            {'error': 'PAN card number is required'},
-            status=status.HTTP_400_BAD_REQUEST
-        )
-    
-    # Validate custom weights format
-    if custom_weights:
-        try:
-            # Validate that weights are numeric and reasonable
-            valid_factors = ['payment_history', 'credit_utilization', 'credit_history_length', 'credit_mix', 'new_credit']
-            
-            for factor, weight in custom_weights.items():
-                if factor not in valid_factors:
-                    return Response(
-                        {'error': f'Invalid factor: {factor}. Valid factors are: {valid_factors}'},
-                        status=status.HTTP_400_BAD_REQUEST
-                    )
-                
-                weight_value = float(weight)
-                if weight_value < 0 or weight_value > 100:
-                    return Response(
-                        {'error': f'Weight for {factor} must be between 0 and 100'},
-                        status=status.HTTP_400_BAD_REQUEST
-                    )
-                    
-        except (ValueError, TypeError):
-            return Response(
-                {'error': 'Weights must be numeric values'},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-    
-    # Get customer
-    customer = get_object_or_404(Customer, pan_card_number=pan_card_number)
+    if not pan_number:
+        return JsonResponse({'error': 'PAN card number required'}, status=400)
+
+    # Weights for score calculation
+    weights = {
+        "payment_history": 35,
+        "credit_utilization": 30,
+        "credit_history_length": 15,
+        "credit_mix": 10,
+        "new_credit": 10
+    }
+
+    # Step 3: Call bank microservices with token
+    base_url = getattr(settings, 'BANK_MICROSERVICE_BASE_URL', 'http://172.17.254.222:5000/api')
 
     try:
-        # Create calculator with custom weights
-        calculator = DynamicCibilScoreCalculator(customer, custom_weights)
+        auth_response = requests.post(f"{base_url}/auth-token/", timeout=30)
+        token = auth_response.json().get("token")
+        headers = {
+    "Authorization": f"Bearer {token}"
+}
+
+        customers = requests.get(f"{base_url}/fetch-customers/",headers=headers,timeout=30).json()
+        loans = requests.get(f"{base_url}/fetch-loans",headers=headers,timeout=30).json()
+        transactions = requests.get(f"{base_url}/fetch-transactions/",headers=headers,timeout=30).json()
         
-        # Calculate dynamic CIBIL score
-        new_score, calculation_details = calculator.calculate_dynamic_cibil_score(commit=False)
-        new_score.customer = customer
-        new_score.is_latest = True
-
-        with transaction.atomic():
-            # Mark all existing scores as not latest
-            CibilScore.objects.filter(customer=customer, is_latest=True).update(is_latest=False)
-            
-            # Save the new score
-            new_score.save()
-            
-            # Generate report (if you have this function)
-            # report = generate_cibil_report(new_score)
-
-        # Get comprehensive breakdown
-        comprehensive_breakdown = calculator.get_comprehensive_score_breakdown()
-        
-        # Prepare response
-        response_data = {
-            'pan_card_number': pan_card_number,
-            'customer': {
-                'full_name': customer.full_name,
-                'email': customer.email,
-                'phone': customer.phone_number,
-                'pan_card_number': customer.pan_card_number
-            },
-            'cibil_score_summary': {
-                'final_score': comprehensive_breakdown['final_cibil_score'],
-                'base_score': comprehensive_breakdown['base_cibil_score'],
-                'score_range': {
-                    'minimum_possible': comprehensive_breakdown['dynamic_range']['min_score'],
-                    'maximum_possible': comprehensive_breakdown['dynamic_range']['max_score'],
-                    'range_width': comprehensive_breakdown['dynamic_range']['range_width']
-                },
-                'score_grade': get_cibil_grade(comprehensive_breakdown['final_cibil_score']),
-                'improvement_potential': comprehensive_breakdown['summary']['improvement_potential']
-            },
-            'weight_configuration': {
-                'custom_weights_applied': bool(custom_weights),
-                'weights_used': comprehensive_breakdown['custom_weights'],
-                'weights_normalized': True
-            },
-            'detailed_breakdown': comprehensive_breakdown,
-            'calculation_metadata': {
-                'calculation_date': new_score.score_date.isoformat(),
-                'dynamic_range_applied': True,
-                'behavioral_adjustments_applied': True,
-                'algorithm_version': '2.0_dynamic'
-            }
-        }
-
-        return Response(response_data, status=status.HTTP_200_OK)
-
-    except Exception as e:
-        return Response(
-            {'error': 'Failed to calculate dynamic CIBIL score', 'details': str(e)},
-            status=status.HTTP_500_INTERNAL_SERVER_ERROR
-        )
-
-def get_cibil_grade(score):
-    """Convert CIBIL score to letter grade"""
-    if score >= 800:
-        return "A+"
-    elif score >= 750:
-        return "A"
-    elif score >= 700:
-        return "B+"
-    elif score >= 650:
-        return "B"
-    elif score >= 600:
-        return "C+"
-    elif score >= 550:
-        return "C"
-    elif score >= 500:
-        return "D+"
-    elif score >= 450:
-        return "D"
-    else:
-        return "F"
-
-# Alternative endpoint for backward compatibility
-@api_view(['POST'])
-@permission_classes([AllowAny])
-def check_cibil_score(request):
-    """
-    Original endpoint - redirects to dynamic calculation with default weights
-    """
-    # Simply call the dynamic endpoint with no custom weights
-    return check_dynamic_cibil_score(request)
-
-
-@api_view(['GET'])
-@permission_classes([AllowAny])
-def get_cibil_history(request, pan_card_number):
-    """
-    Get CIBIL score history for a customer
-    """
-    try:
-        customer = get_object_or_404(Customer, pan_card_number=pan_card_number)
-        cibil_scores = CibilScore.objects.filter(customer=customer).order_by('-score_date')
-        
-        serializer = CibilScoreSerializer(cibil_scores, many=True)
-        return Response({
-            'customer': customer.full_name,
-            'pan_card_number': pan_card_number,
-            'score_history': serializer.data
-        }, status=status.HTTP_200_OK)
-        
-    except Customer.DoesNotExist:
-        return Response(
-            {'error': 'Customer not found'}, 
-            status=status.HTTP_404_NOT_FOUND
-        )
-
-class BankAccountViewSet(generics.ListCreateAPIView):
-    serializer_class = BankAccountSerializer
-    permission_classes = [AllowAny]
+    except requests.exceptions.RequestException as e:
+        return JsonResponse({'error': f'Error calling bank microservices: {str(e)}'}, status=502)
     
-    def get_queryset(self):
-        pan_card_number = self.kwargs.get('pan_card_number')
-        if pan_card_number:
-            customer = get_object_or_404(Customer, pan_card_number=pan_card_number)
-            return BankAccount.objects.filter(customer=customer)
-        return BankAccount.objects.all()
+    # Step 4: Find customer by PAN
+    customer = next((c for c in customers if c.get('panNumber', '').upper() == pan_number.upper()), None)
+    if not customer:
+        return JsonResponse({'error': 'Customer not found'}, status=404)
 
-class CreditCardViewSet(generics.ListCreateAPIView):
-    serializer_class = CreditCardSerializer
-    permission_classes = [AllowAny]
-    
-    def get_queryset(self):
-        pan_card_number = self.kwargs.get('pan_card_number')
-        if pan_card_number:
-            customer = get_object_or_404(Customer, pan_card_number=pan_card_number)
-            return CreditCard.objects.filter(customer=customer)
-        return CreditCard.objects.all()
+    customer_id = customer.get('id')
+    customer_loans = [loan for loan in loans if loan.get('customerId') == customer_id]
+    account_number = customer.get('accountNumber') or customer.get('generatedAccountNumber')
+    customer_transactions = [txn for txn in transactions if account_number and account_number in str(txn.get('accountId', ''))]
 
-class LoanViewSet(generics.ListCreateAPIView):
-    serializer_class = LoanSerializer
-    permission_classes = [AllowAny]
-    
-    def get_queryset(self):
-        pan_card_number = self.kwargs.get('pan_card_number')
-        if pan_card_number:
-            customer = get_object_or_404(Customer, pan_card_number=pan_card_number)
-            return Loan.objects.filter(customer=customer)
-        return Loan.objects.all()
+    # Step 5: Calculate CIBIL score
+    payment_score = calculate_payment_history(customer_loans, customer_transactions)
+    utilization_score = calculate_credit_utilization(customer_loans)
+    history_score = calculate_credit_history(customer, customer_loans, customer_transactions)
+    mix_score = calculate_credit_mix(customer_loans)
+    new_credit_score = calculate_new_credit(customer_loans)
 
-class PaymentHistoryViewSet(generics.ListCreateAPIView):
-    serializer_class = PaymentHistorySerializer
-    permission_classes = [AllowAny]
-    
-    def get_queryset(self):
-        pan_card_number = self.kwargs.get('pan_card_number')
-        if pan_card_number:
-            customer = get_object_or_404(Customer, pan_card_number=pan_card_number)
-            return PaymentHistory.objects.filter(customer=customer).order_by('-due_date')
-        return PaymentHistory.objects.all()
-
-
-@api_view(['POST'])
-@permission_classes([AllowAny])
-def add_customer_data(request):
-    """
-    Bulk add customer financial data
-    """
-    try:
-        with transaction.atomic():
-            # Extract customer data
-            customer_data = request.data.get('customer')
-            bank_accounts = request.data.get('bank_accounts', [])
-            credit_cards = request.data.get('credit_cards', [])
-            loans = request.data.get('loans', [])
-            payment_history = request.data.get('payment_history', [])
-            
-            # Create or get customer
-            customer, created = Customer.objects.get_or_create(
-                pan_card_number=customer_data['pan_card_number'],
-                defaults=customer_data
-            )
-            
-            # Add bank accounts
-            for account_data in bank_accounts:
-                account_data['customer'] = customer.id
-                BankAccount.objects.create(**account_data)
-            
-            # Add credit cards
-            for card_data in credit_cards:
-                card_data['customer'] = customer.id
-                CreditCard.objects.create(**card_data)
-            
-            # Add loans
-            for loan_data in loans:
-                loan_data['customer'] = customer.id
-                Loan.objects.create(**loan_data)
-            
-            # Add payment history
-            for payment_data in payment_history:
-                payment_data['customer'] = customer.id
-                PaymentHistory.objects.create(**payment_data)
-            
-            return Response({
-                'message': 'Customer data added successfully',
-                'customer': CustomerSerializer(customer).data
-            }, status=status.HTTP_201_CREATED)
-            
-    except Exception as e:
-        return Response({
-            'error': 'Failed to add customer data',
-            'details': str(e)
-        }, status=status.HTTP_400_BAD_REQUEST)
-
-@api_view(['GET'])
-@permission_classes([AllowAny])
-def customer_dashboard(request, pan_card_number):
-    """
-    Get complete customer dashboard with all financial information
-    """
-    try:
-        customer = get_object_or_404(Customer, pan_card_number=pan_card_number)
-        
-        # Get all related data
-        bank_accounts = BankAccount.objects.filter(customer=customer)
-        credit_cards = CreditCard.objects.filter(customer=customer)
-        loans = Loan.objects.filter(customer=customer)
-        payment_history = PaymentHistory.objects.filter(customer=customer).order_by('-due_date')[:10]
-        latest_cibil_score = CibilScore.objects.filter(customer=customer, is_latest=True).first()
-        
-        # Calculate summary statistics
-        total_credit_limit = sum(card.credit_limit for card in credit_cards if card.is_active)
-        total_credit_used = sum(card.current_balance for card in credit_cards if card.is_active)
-        total_loan_outstanding = sum(loan.outstanding_amount for loan in loans if loan.status == 'ACTIVE')
-        
-        utilization_ratio = 0
-        if total_credit_limit > 0:
-            utilization_ratio = (total_credit_used / total_credit_limit) * 100
-        
-        dashboard_data = {
-            'customer': CustomerSerializer(customer).data,
-            'summary': {
-                'total_bank_accounts': bank_accounts.count(),
-                'active_credit_cards': credit_cards.filter(is_active=True).count(),
-                'active_loans': loans.filter(status='ACTIVE').count(),
-                'total_credit_limit': float(total_credit_limit),
-                'total_credit_used': float(total_credit_used),
-                'credit_utilization_ratio': round(utilization_ratio, 2),
-                'total_loan_outstanding': float(total_loan_outstanding),
-            },
-            'bank_accounts': BankAccountSerializer(bank_accounts, many=True).data,
-            'credit_cards': CreditCardSerializer(credit_cards, many=True).data,
-            'loans': LoanSerializer(loans, many=True).data,
-            'recent_payments': PaymentHistorySerializer(payment_history, many=True).data,
-            'latest_cibil_score': CibilScoreSerializer(latest_cibil_score).data if latest_cibil_score else None
-        }
-        
-        return Response(dashboard_data, status=status.HTTP_200_OK)
-        
-    except Customer.DoesNotExist:
-        return Response(
-            {'error': 'Customer not found'}, 
-            status=status.HTTP_404_NOT_FOUND
-        )
-
-def generate_cibil_report(cibil_score):
-    """
-    Generate detailed CIBIL report based on score
-    """
-    customer = cibil_score.customer
-    score = cibil_score.score
-    
-    # Generate report summary
-    summary = f"""
-    CIBIL Score Report for {customer.full_name}
-    PAN: {customer.pan_card_number}
-    Score: {score} ({cibil_score.get_score_category()})
-    Report Date: {cibil_score.score_date.strftime('%Y-%m-%d')}
-    
-    Score Breakdown:
-    - Payment History: {cibil_score.payment_history_score}% (Weight: 35%)
-    - Credit Utilization: {cibil_score.credit_utilization_score}% (Weight: 30%)
-    - Credit History Length: {cibil_score.credit_history_length_score}% (Weight: 15%)
-    - Credit Mix: {cibil_score.credit_mix_score}% (Weight: 10%)
-    - New Credit: {cibil_score.new_credit_score}% (Weight: 10%)
-    
-    Account Summary:
-    - Total Accounts: {cibil_score.total_accounts}
-    - Active Accounts: {cibil_score.active_accounts}
-    - Total Credit Limit: ₹{cibil_score.total_credit_limit:,.2f}
-    - Total Outstanding: ₹{cibil_score.total_outstanding:,.2f}
-    - Credit Utilization: {cibil_score.credit_utilization_ratio}%
-    """
-    
-    # Generate recommendations
-    recommendations = []
-    risk_factors = []
-    positive_factors = []
-    
-    if cibil_score.payment_history_score < 70:
-        risk_factors.append("Payment history needs improvement")
-        recommendations.append("Make all payments on time to improve payment history")
-    else:
-        positive_factors.append("Good payment history")
-    
-    if cibil_score.credit_utilization_ratio > 30:
-        risk_factors.append("High credit utilization")
-        recommendations.append("Reduce credit card balances to below 30% of limit")
-    else:
-        positive_factors.append("Good credit utilization")
-    
-    if cibil_score.credit_history_length_score < 50:
-        risk_factors.append("Short credit history")
-        recommendations.append("Maintain old accounts to build credit history")
-    
-    if cibil_score.credit_mix_score < 50:
-        recommendations.append("Consider diversifying credit types")
-    
-    report = CibilReport.objects.create(
-        customer=customer,
-        cibil_score=cibil_score,
-        report_summary=summary.strip(),
-        recommendations="; ".join(recommendations),
-        risk_factors="; ".join(risk_factors),
-        positive_factors="; ".join(positive_factors)
+    base_score = (
+        (payment_score * weights["payment_history"] / 100) +
+        (utilization_score * weights["credit_utilization"] / 100) +
+        (history_score * weights["credit_history_length"] / 100) +
+        (mix_score * weights["credit_mix"] / 100) +
+        (new_credit_score * weights["new_credit"] / 100)
     )
-    
-    return report
+    cibil_score = min(900, max(300, int(300 + (base_score * 6))))
+
+    return JsonResponse({
+        "success": True,
+        "bank": bank_name,
+        "pan_card_number": pan_number,
+        "customer_name": f"{customer.get('firstName', '')} {customer.get('lastName', '')}".strip(),
+        "cibil_score": cibil_score,
+        "component_scores": {
+            "payment_history": payment_score,
+            "credit_utilization": utilization_score,
+            "credit_history_length": history_score,
+            "credit_mix": mix_score,
+            "new_credit": new_credit_score
+        },
+        "calculated_at": datetime.now().isoformat()
+    })
+
+
+# ---------------- HELPER FUNCTIONS ----------------
+def calculate_payment_history(loans, transactions):
+    if not loans:
+        return 70.0 if transactions else 60.0
+    approved_loans = sum(1 for loan in loans if loan.get('status', '').lower() == 'approved')
+    return min(100, (approved_loans / len(loans)) * 100) if loans else 60.0
+
+
+def calculate_credit_utilization(loans):
+    if not loans:
+        return 75.0
+    total_amount = sum(float(loan.get('amount', 0) or 0) for loan in loans if loan.get('status', '').lower() == 'approved')
+    if total_amount == 0:
+        return 75.0
+    utilization = total_amount * 0.7
+    ratio = (utilization / total_amount) * 100
+    return 85.0 if ratio <= 30 else (65.0 if ratio <= 50 else 45.0)
+
+
+def calculate_credit_history(customer, loans, transactions):
+    dates = []
+    for loan in loans:
+        created_at = loan.get('createdAt')
+        if created_at:
+            try:
+                dates.append(datetime.fromisoformat(str(created_at).replace('Z', '+00:00')).date())
+            except Exception:
+                pass
+    created_at = customer.get('createdAt')
+    if created_at:
+        try:
+            dates.append(datetime.fromisoformat(str(created_at).replace('Z', '+00:00')).date())
+        except Exception:
+            pass
+    if not dates:
+        return 35.0
+    months_old = (datetime.now().date() - min(dates)).days // 30
+    if months_old >= 60:
+        return 70.0
+    elif months_old >= 36:
+        return 55.0
+    elif months_old >= 12:
+        return 40.0
+    return 35.0
+
+
+def calculate_credit_mix(loans):
+    if not loans:
+        return 50.0
+    loan_types = {loan.get('loanType', '').lower() for loan in loans if loan.get('loanType')}
+    return min(100, 40 + len(loan_types) * 15)
+
+
+def calculate_new_credit(loans):
+    if not loans:
+        return 85.0
+    six_months_ago = datetime.now() - timedelta(days=180)
+    recent_loans = 0
+    for loan in loans:
+        created_at = loan.get('createdAt')
+        if created_at:
+            try:
+                if datetime.fromisoformat(str(created_at).replace('Z', '+00:00')) >= six_months_ago:
+                    recent_loans += 1
+            except Exception:
+                pass
+    return 85.0 if recent_loans == 0 else (80.0 if recent_loans == 1 else 60.0)
