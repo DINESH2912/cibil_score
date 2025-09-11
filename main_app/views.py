@@ -8,7 +8,15 @@ from django.views.decorators.csrf import csrf_exempt
 
 SECRET_KEY = getattr(settings, "JWT_SECRET_KEY", "supersecret")  # for signing JWTs
 TOKEN_EXPIRY_MINUTES = 30
+import json
+import jwt
+from datetime import datetime, timedelta
+from django.conf import settings
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 
+# Set expiry time for token
+TOKEN_EXPIRY_MINUTES = 10  
 
 @csrf_exempt
 def auth_token(request):
@@ -31,8 +39,8 @@ def auth_token(request):
         "exp": datetime.utcnow() + timedelta(minutes=TOKEN_EXPIRY_MINUTES)
     }
 
-    # Step 3: Generate token
-    token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
+    # Step 3: Generate token (use SECRET_KEY from settings)
+    token = jwt.encode(payload, settings.SECRET_KEY, algorithm="HS256")
 
     # Step 4: Return token
     return JsonResponse({

@@ -5,6 +5,19 @@ import uuid
 def generate_id():
     return uuid.uuid4().hex  # 32-char hex without hyphens
 
+# models.py
+from django.db import models
+
+class TrafficLog(models.Model):
+    instance_id = models.CharField(max_length=50)
+    path = models.CharField(max_length=200)
+    count = models.IntegerField(default=0)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user} - {self.action}"
+
+
 # NEW: Bank model for API-key authentication
 class Bank(models.Model):
     id = models.CharField(primary_key=True, max_length=32, editable=False, default=generate_id)

@@ -1,0 +1,94 @@
+2025-09-08 10:29:46,431 | INFO | Path: /auth_token/
+Method: POST
+Duration: 0.02s
+Memory Used: 0.49 MB
+Bytes Sent: 203
+---------------------
+INFO Method: POST
+Status Code: 200
+Duration: 0.02s
+Memory Used: 62.60 MB
+Bytes Sent: 203
+Bytes Received: 37
+---------------------
+INFO Path: /auth_token/
+Client IP: 192.168.165.176
+Method: POST
+Status Code: 200
+Duration: 0.03s
+Memory Used: 62.12 MB
+Bytes Sent: 203
+Bytes Received: 37
+---------------------
+INFO Path: /auth_token/
+Client IP: 192.168.165.176
+Method: POST
+Status Code: 200
+Duration: 0.04s
+Memory Used: 61.55 MB
+Bytes Sent: 203
+Bytes Received: 37
+---------------------
+INFO Path: /auth_token/
+Client IP: 192.168.165.176
+Method: POST
+Status Code: 200
+Duration: 0.01s
+Memory Used: 62.03 MB
+Bytes Sent: 203
+Bytes Received: 37
+---------------------
+INFO Path: /auth_token/
+Client IP: 192.168.165.176
+Method: POST
+Status Code: 200
+Duration: 0.03s
+Memory Used: 62.24 MB
+Bytes Sent: 203
+Bytes Received: 37
+---------------------
+INFO Path: /auth_token/
+Client IP: 192.168.165.176
+Method: POST
+Status Code: 200
+Duration: 0.02s
+Memory Used: 62.07 MB
+Bytes Sent: 203
+Bytes Received: 37
+---------------------
+INFO Path: /auth_token/
+Client IP: 192.168.165.176
+Method: POST
+Status Code: 200
+Duration: 0.01s
+Memory Used: 62.28 MB
+Bytes Sent: 203
+Bytes Received: 37
+---------------------
+INFO Path: /
+Client IP: 192.168.167.1
+Method: GET
+Status Code: 404
+Duration: 0.52s
+Memory Used: 34.92 MB
+Bytes Sent: 2443
+Bytes Received: 0
+---------------------
+INFO Path: /favicon.ico
+Client IP: 192.168.167.1
+Method: GET
+Status Code: 404
+Duration: 0.04s
+Memory Used: 36.33 MB
+Bytes Sent: 2494
+Bytes Received: 0
+---------------------
+INFO Path: /auth_token/
+Client IP: 192.168.167.1
+Method: POST
+Status Code: 200
+Duration: 0.03s
+Memory Used: 46.55 MB
+Bytes Sent: 203
+Bytes Received: 35
+---------------------

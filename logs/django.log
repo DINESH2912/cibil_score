@@ -2562,3 +2562,222 @@ INFO 2025-08-13 18:55:01,828 autoreload 19800 44124 C:\Users\DINESH\Dropbox\PC\D
 INFO 2025-08-13 18:55:05,064 autoreload 4496 41192 Watching for file changes with StatReloader
 INFO 2025-08-13 18:56:02,006 autoreload 4496 41192 C:\Users\DINESH\Dropbox\PC\Desktop\studies\cibil_score_checker\score_checker\main_app\views.py changed, reloading.
 INFO 2025-08-13 18:56:04,506 autoreload 30940 38348 Watching for file changes with StatReloader
+INFO 2025-08-22 10:07:09,624 autoreload 18840 38228 Watching for file changes with StatReloader
+INFO 2025-08-22 10:08:12,259 autoreload 5072 39516 Watching for file changes with StatReloader
+INFO 2025-08-22 10:10:38,335 autoreload 35116 19172 Watching for file changes with StatReloader
+INFO 2025-08-22 10:11:53,044 autoreload 17988 37472 Watching for file changes with StatReloader
+INFO 2025-08-22 10:12:20,805 autoreload 20244 35044 Watching for file changes with StatReloader
+INFO 2025-08-22 10:12:45,709 autoreload 21032 36620 Watching for file changes with StatReloader
+INFO 2025-08-22 10:15:04,544 autoreload 29964 16816 Watching for file changes with StatReloader
+INFO 2025-08-22 10:15:56,073 autoreload 25828 36044 Watching for file changes with StatReloader
+WARNING 2025-08-22 10:16:30,332 log 25828 33232 Not Found: /
+WARNING 2025-08-22 10:16:30,334 basehttp 25828 33232 "GET / HTTP/1.1" 404 2442
+WARNING 2025-08-22 10:16:30,463 log 25828 33232 Not Found: /favicon.ico
+WARNING 2025-08-22 10:16:30,464 basehttp 25828 33232 "GET /favicon.ico HTTP/1.1" 404 2493
+WARNING 2025-08-22 10:16:50,400 log 25828 33232 Method Not Allowed: /auth_token/
+WARNING 2025-08-22 10:16:50,401 basehttp 25828 33232 "GET /auth_token/ HTTP/1.1" 405 37
+INFO 2025-08-31 19:40:56,840 autoreload 5408 28368 Watching for file changes with StatReloader
+INFO 2025-08-31 19:41:27,663 autoreload 26408 24532 Watching for file changes with StatReloader
+INFO 2025-08-31 19:41:53,795 autoreload 23304 10448 Watching for file changes with StatReloader
+INFO 2025-08-31 19:42:18,541 autoreload 2908 28148 Watching for file changes with StatReloader
+INFO 2025-08-31 19:43:02,833 autoreload 30772 26656 Watching for file changes with StatReloader
+WARNING 2025-08-31 19:43:22,004 log 30772 29932 Not Found: /
+WARNING 2025-08-31 19:43:22,005 basehttp 30772 29932 "GET / HTTP/1.1" 404 2442
+INFO 2025-08-31 19:48:24,996 autoreload 28444 29832 Watching for file changes with StatReloader
+INFO 2025-08-31 20:22:34,094 autoreload 28276 27668 Watching for file changes with StatReloader
+INFO 2025-08-31 20:27:50,878 autoreload 8100 7952 Watching for file changes with StatReloader
+WARNING 2025-08-31 20:27:54,275 log 8100 30784 Not Found: /
+WARNING 2025-08-31 20:27:54,276 basehttp 8100 30784 "GET / HTTP/1.1" 404 2442
+WARNING 2025-08-31 20:27:54,394 log 8100 30784 Not Found: /favicon.ico
+WARNING 2025-08-31 20:27:54,395 basehttp 8100 30784 "GET /favicon.ico HTTP/1.1" 404 2493
+WARNING 2025-08-31 20:42:37,572 log 7908 30148 Not Found: /
+WARNING 2025-08-31 20:42:58,114 log 7908 20072 Not Found: /
+WARNING 2025-08-31 20:43:04,111 log 7908 31608 Not Found: /
+WARNING 2025-08-31 20:43:12,649 log 7908 24904 Not Found: /auth-token
+WARNING 2025-08-31 20:43:20,845 log 7908 30148 Method Not Allowed: /auth_token/
+WARNING 2025-08-31 20:45:46,344 log 32324 28404 Method Not Allowed: /auth_token/
+WARNING 2025-08-31 20:48:24,471 log 32324 31932 Not Found: /
+WARNING 2025-08-31 20:49:12,277 log 32324 31896 Not Found: /
+WARNING 2025-08-31 20:50:06,953 log 32324 31896 Not Found: /
+WARNING 2025-08-31 20:51:09,279 log 13672 4004 Not Found: /
+WARNING 2025-08-31 20:51:28,653 log 13672 30068 Forbidden (Origin checking failed - http://localhost:8081 does not match any trusted origins.): /admin/login/
+INFO 2025-09-01 10:39:05,156 autoreload 29536 30688 Watching for file changes with StatReloader
+WARNING 2025-09-01 10:39:26,242 log 13772 22512 Not Found: /
+WARNING 2025-09-01 10:39:26,370 log 13772 29032 Not Found: /favicon.ico
+INFO 2025-09-07 09:19:41,064 autoreload 29072 37564 Watching for file changes with StatReloader
+INFO 2025-09-07 09:20:28,773 autoreload 53424 46524 Watching for file changes with StatReloader
+INFO 2025-09-07 09:20:59,867 autoreload 46832 55404 Watching for file changes with StatReloader
+INFO 2025-09-07 09:22:12,457 autoreload 46832 55404 C:\Users\DINESH\Dropbox\PC\Downloads\cibil\cibil_score\score_checker\settings.py changed, reloading.
+INFO 2025-09-07 09:22:13,507 autoreload 65616 38228 Watching for file changes with StatReloader
+INFO 2025-09-07 09:22:16,952 autoreload 65616 38228 C:\Users\DINESH\Dropbox\PC\Downloads\cibil\cibil_score\score_checker\settings.py changed, reloading.
+INFO 2025-09-07 09:22:17,993 autoreload 63784 57544 Watching for file changes with StatReloader
+INFO 2025-09-07 09:22:26,582 autoreload 63784 57544 C:\Users\DINESH\Dropbox\PC\Downloads\cibil\cibil_score\score_checker\settings.py changed, reloading.
+INFO 2025-09-07 09:22:28,076 autoreload 59444 32824 Watching for file changes with StatReloader
+INFO 2025-09-07 09:27:12,472 autoreload 48792 23116 Watching for file changes with StatReloader
+INFO 2025-09-07 09:29:45,365 autoreload 33716 38628 Watching for file changes with StatReloader
+INFO 2025-09-07 09:30:32,348 autoreload 36968 57676 Watching for file changes with StatReloader
+WARNING 2025-09-07 09:30:50,602 log 36968 15288 Not Found: /
+WARNING 2025-09-07 09:30:50,605 basehttp 36968 15288 "GET / HTTP/1.1" 404 2442
+WARNING 2025-09-07 09:30:50,728 log 36968 15288 Not Found: /favicon.ico
+WARNING 2025-09-07 09:30:50,729 basehttp 36968 15288 "GET /favicon.ico HTTP/1.1" 404 2493
+INFO 2025-09-07 09:31:44,988 autoreload 22516 66916 Watching for file changes with StatReloader
+WARNING 2025-09-07 09:33:06,201 log 22516 37644 Bad Request: /auth_token/
+WARNING 2025-09-07 09:33:06,204 basehttp 22516 37644 "POST /auth_token/ HTTP/1.1" 400 45
+ERROR 2025-09-07 09:34:07,271 log 22516 57936 Internal Server Error: /auth_token/
+Traceback (most recent call last):
+  File "C:\Users\DINESH\Dropbox\PC\Downloads\cibil\cibil_score\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\DINESH\Dropbox\PC\Downloads\cibil\cibil_score\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\DINESH\Dropbox\PC\Downloads\cibil\cibil_score\venv\Lib\site-packages\django\views\decorators\csrf.py", line 56, in wrapper_view
+    return view_func(*args, **kwargs)
+  File "C:\Users\DINESH\Dropbox\PC\Downloads\cibil\cibil_score\main_app\views.py", line 35, in auth_token
+    token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
+            ^^^^^^^^^^
+AttributeError: module 'jwt' has no attribute 'encode'
+ERROR 2025-09-07 09:34:07,282 basehttp 22516 57936 "POST /auth_token/ HTTP/1.1" 500 80958
+INFO 2025-09-07 09:34:58,647 autoreload 22516 66916 C:\Users\DINESH\Dropbox\PC\Downloads\cibil\cibil_score\main_app\views.py changed, reloading.
+INFO 2025-09-07 09:35:00,883 autoreload 67952 14408 Watching for file changes with StatReloader
+INFO 2025-09-07 09:35:13,368 autoreload 67952 14408 C:\Users\DINESH\Dropbox\PC\Downloads\cibil\cibil_score\main_app\views.py changed, reloading.
+INFO 2025-09-07 09:35:48,821 autoreload 33940 39800 Watching for file changes with StatReloader
+INFO 2025-09-07 09:35:54,717 basehttp 33940 29704 "POST /auth_token/ HTTP/1.1" 200 200
+INFO 2025-09-07 09:37:37,476 autoreload 33940 39800 C:\Users\DINESH\Dropbox\PC\Downloads\cibil\cibil_score\score_checker\settings.py changed, reloading.
+INFO 2025-09-07 09:37:39,076 autoreload 24324 59660 Watching for file changes with StatReloader
+INFO 2025-09-07 09:37:54,961 autoreload 29324 38580 Watching for file changes with StatReloader
+INFO 2025-09-07 09:37:58,826 basehttp 29324 54208 "POST /auth_token/ HTTP/1.1" 200 200
+INFO 2025-09-07 10:17:45,605 autoreload 30856 42436 Watching for file changes with StatReloader
+INFO 2025-09-07 10:17:53,444 basehttp 30856 35336 "POST /auth_token/ HTTP/1.1" 200 200
+INFO 2025-09-07 10:28:54,166 autoreload 61288 47884 Watching for file changes with StatReloader
+WARNING 2025-09-07 10:28:57,644 log 61288 39152 Not Found: /
+WARNING 2025-09-07 10:28:57,644 basehttp 61288 39152 "GET / HTTP/1.1" 404 2442
+WARNING 2025-09-07 10:29:42,048 log 61288 39152 Not Found: /
+WARNING 2025-09-07 10:29:42,053 basehttp 61288 39152 "GET / HTTP/1.1" 404 2442
+WARNING 2025-09-07 10:35:24,732 log 61288 39152 Not Found: /
+INFO 2025-09-07 10:35:28,533 autoreload 41432 24636 Watching for file changes with StatReloader
+WARNING 2025-09-07 10:35:31,673 log 41432 42408 Not Found: /
+WARNING 2025-09-07 10:35:31,678 basehttp 41432 42408 "GET / HTTP/1.1" 404 2442
+INFO 2025-09-07 10:36:34,214 autoreload 57556 22252 Watching for file changes with StatReloader
+WARNING 2025-09-07 10:38:47,139 log 57556 43168 Not Found: /
+WARNING 2025-09-07 10:38:47,140 basehttp 57556 43168 "GET / HTTP/1.1" 404 2446
+WARNING 2025-09-07 10:38:47,432 log 57556 43168 Not Found: /favicon.ico
+WARNING 2025-09-07 10:38:47,432 basehttp 57556 43168 "GET /favicon.ico HTTP/1.1" 404 2497
+WARNING 2025-09-07 10:38:50,889 log 57556 43168 Not Found: /
+WARNING 2025-09-07 10:38:50,890 basehttp 57556 43168 "GET / HTTP/1.1" 404 2446
+WARNING 2025-09-07 10:39:10,123 log 57556 41312 Not Found: /
+WARNING 2025-09-07 10:39:10,124 basehttp 57556 41312 "GET / HTTP/1.1" 404 2442
+WARNING 2025-09-07 10:46:55,110 log 57556 64868 Not Found: /favicon.ico
+WARNING 2025-09-07 10:46:55,110 basehttp 57556 64868 "GET /favicon.ico HTTP/1.1" 404 2497
+INFO 2025-09-08 09:20:58,561 autoreload 31196 50912 Watching for file changes with StatReloader
+WARNING 2025-09-08 09:23:38,172 log 31196 40636 Not Found: /
+WARNING 2025-09-08 09:23:38,175 basehttp 31196 40636 "GET / HTTP/1.1" 404 2442
+WARNING 2025-09-08 09:23:38,456 log 31196 40636 Not Found: /favicon.ico
+WARNING 2025-09-08 09:23:38,457 basehttp 31196 40636 "GET /favicon.ico HTTP/1.1" 404 2493
+WARNING 2025-09-08 09:36:52,631 log 61588 18412 Not Found: /auth_token/\n
+WARNING 2025-09-08 10:01:36,974 log 43992 12712 Not Found: /
+WARNING 2025-09-08 10:01:37,244 log 43992 15424 Not Found: /favicon.ico
+WARNING 2025-09-08 10:01:46,757 log 43992 20996 Method Not Allowed: /auth_token/
+WARNING 2025-09-08 10:09:27,398 log 21176 30668 Not Found: /auth_token/
+
+INFO 2025-09-08 10:11:46,694 autoreload 67624 44980 Watching for file changes with StatReloader
+INFO 2025-09-08 10:12:37,303 autoreload 51476 14140 Watching for file changes with StatReloader
+WARNING 2025-09-08 10:14:31,787 log 67624 10364 Not Found: /auth_token/\n
+WARNING 2025-09-08 10:14:31,789 basehttp 67624 10364 "POST /auth_token/%0A HTTP/1.1" 404 2500
+WARNING 2025-09-08 10:15:14,027 log 51476 15252 Not Found: /auth_token/\n
+WARNING 2025-09-08 10:15:14,028 basehttp 51476 15252 "POST /auth_token/%0A HTTP/1.1" 404 2500
+WARNING 2025-09-08 10:15:29,430 log 67624 7048 Not Found: /auth_token/\n
+WARNING 2025-09-08 10:15:29,430 basehttp 67624 7048 "POST /auth_token/%0A HTTP/1.1" 404 2500
+WARNING 2025-09-08 10:16:28,844 log 51476 49732 Not Found: /auth_token\n
+WARNING 2025-09-08 10:16:28,844 basehttp 51476 49732 "POST /auth_token%0A HTTP/1.1" 404 2497
+INFO 2025-09-08 10:19:58,328 autoreload 67624 44980 C:\Users\DINESH\Dropbox\PC\Downloads\cibil\cibil_score\score_checker\settings.py changed, reloading.
+INFO 2025-09-08 10:19:58,636 autoreload 51476 14140 C:\Users\DINESH\Dropbox\PC\Downloads\cibil\cibil_score\score_checker\settings.py changed, reloading.
+INFO 2025-09-08 10:20:00,168 autoreload 27216 25836 Watching for file changes with StatReloader
+INFO 2025-09-08 10:20:00,346 autoreload 4240 15540 Watching for file changes with StatReloader
+INFO 2025-09-08 10:20:12,245 autoreload 27216 25836 C:\Users\DINESH\Dropbox\PC\Downloads\cibil\cibil_score\score_checker\settings.py changed, reloading.
+INFO 2025-09-08 10:20:12,360 autoreload 4240 15540 C:\Users\DINESH\Dropbox\PC\Downloads\cibil\cibil_score\score_checker\settings.py changed, reloading.
+INFO 2025-09-08 10:20:13,885 autoreload 63524 20552 Watching for file changes with StatReloader
+INFO 2025-09-08 10:20:14,047 autoreload 45604 65636 Watching for file changes with StatReloader
+WARNING 2025-09-08 10:20:16,659 log 63524 65044 Not Found: /auth_token\n
+WARNING 2025-09-08 10:20:16,660 basehttp 63524 65044 "POST /auth_token%0A HTTP/1.1" 404 2497
+WARNING 2025-09-08 10:20:18,234 log 45604 50620 Not Found: /auth_token\n
+WARNING 2025-09-08 10:20:18,235 basehttp 45604 50620 "POST /auth_token%0A HTTP/1.1" 404 2497
+WARNING 2025-09-08 10:22:03,999 log 63524 52248 Not Found: /auth_token/\n
+WARNING 2025-09-08 10:22:04,000 basehttp 63524 52248 "POST /auth_token/%0A HTTP/1.1" 404 2500
+INFO 2025-09-08 10:23:42,238 autoreload 43504 31472 Watching for file changes with StatReloader
+INFO 2025-09-08 10:23:51,683 autoreload 16708 64708 Watching for file changes with StatReloader
+INFO 2025-09-08 10:24:03,831 basehttp 43504 52052 "POST /auth_token/ HTTP/1.1" 200 203
+INFO 2025-09-08 10:24:17,310 basehttp 16708 10684 "POST /auth_token/ HTTP/1.1" 200 203
+INFO 2025-09-08 10:24:26,340 basehttp 43504 63928 "POST /auth_token/ HTTP/1.1" 200 203
+INFO 2025-09-08 10:29:32,047 autoreload 43504 31472 C:\Users\DINESH\Dropbox\PC\Downloads\cibil\cibil_score\score_checker\settings.py changed, reloading.
+INFO 2025-09-08 10:29:32,374 autoreload 16708 64708 C:\Users\DINESH\Dropbox\PC\Downloads\cibil\cibil_score\score_checker\settings.py changed, reloading.
+INFO 2025-09-08 10:29:33,963 autoreload 42956 60920 Watching for file changes with StatReloader
+INFO 2025-09-08 10:29:34,384 autoreload 63000 39312 Watching for file changes with StatReloader
+INFO 2025-09-08 10:29:46,432 basehttp 63000 32596 "POST /auth_token/ HTTP/1.1" 200 203
+INFO 2025-09-08 10:32:33,002 autoreload 42956 60920 C:\Users\DINESH\Dropbox\PC\Downloads\cibil\cibil_score\main_app\middleware\request_logging.py changed, reloading.
+INFO 2025-09-08 10:32:33,185 autoreload 63000 39312 C:\Users\DINESH\Dropbox\PC\Downloads\cibil\cibil_score\main_app\middleware\request_logging.py changed, reloading.
+INFO 2025-09-08 10:32:34,850 autoreload 46160 20064 Watching for file changes with StatReloader
+INFO 2025-09-08 10:32:35,070 autoreload 2184 44668 Watching for file changes with StatReloader
+INFO 2025-09-08 10:32:48,473 autoreload 46160 20064 C:\Users\DINESH\Dropbox\PC\Downloads\cibil\cibil_score\main_app\middleware\request_logging.py changed, reloading.
+INFO 2025-09-08 10:32:48,629 autoreload 2184 44668 C:\Users\DINESH\Dropbox\PC\Downloads\cibil\cibil_score\main_app\middleware\request_logging.py changed, reloading.
+INFO 2025-09-08 10:32:49,851 autoreload 25300 8296 Watching for file changes with StatReloader
+INFO 2025-09-08 10:32:50,051 autoreload 37488 59316 Watching for file changes with StatReloader
+INFO 2025-09-08 10:33:20,500 autoreload 37488 59316 C:\Users\DINESH\Dropbox\PC\Downloads\cibil\cibil_score\main_app\middleware\request_logging.py changed, reloading.
+INFO 2025-09-08 10:33:20,618 autoreload 25300 8296 C:\Users\DINESH\Dropbox\PC\Downloads\cibil\cibil_score\main_app\middleware\request_logging.py changed, reloading.
+INFO 2025-09-08 10:33:21,526 autoreload 61284 12972 Watching for file changes with StatReloader
+INFO 2025-09-08 10:33:21,643 autoreload 48080 10516 Watching for file changes with StatReloader
+INFO 2025-09-08 10:33:32,508 autoreload 61284 12972 C:\Users\DINESH\Dropbox\PC\Downloads\cibil\cibil_score\main_app\middleware\request_logging.py changed, reloading.
+INFO 2025-09-08 10:33:32,566 autoreload 48080 10516 C:\Users\DINESH\Dropbox\PC\Downloads\cibil\cibil_score\main_app\middleware\request_logging.py changed, reloading.
+INFO 2025-09-08 10:33:34,561 autoreload 41840 42076 Watching for file changes with StatReloader
+INFO 2025-09-08 10:33:34,596 autoreload 65712 31100 Watching for file changes with StatReloader
+INFO 2025-09-08 10:34:02,536 autoreload 65712 31100 C:\Users\DINESH\Dropbox\PC\Downloads\cibil\cibil_score\main_app\middleware\request_logging.py changed, reloading.
+INFO 2025-09-08 10:34:03,590 autoreload 41840 42076 C:\Users\DINESH\Dropbox\PC\Downloads\cibil\cibil_score\main_app\middleware\request_logging.py changed, reloading.
+INFO 2025-09-08 10:34:04,917 autoreload 57592 6364 Watching for file changes with StatReloader
+INFO 2025-09-08 10:34:05,638 autoreload 17624 65000 Watching for file changes with StatReloader
+INFO 2025-09-08 10:34:16,045 request_logging 17624 27132 Path: /auth_token/
+Method: POST
+Status Code: 200
+Duration: 0.02s
+Memory Used: 62.61 MB
+Bytes Sent: 203
+Bytes Received: 37
+---------------------
+INFO 2025-09-08 10:34:16,046 basehttp 17624 27132 "POST /auth_token/ HTTP/1.1" 200 203
+INFO 2025-09-08 10:35:06,131 autoreload 57592 6364 C:\Users\DINESH\Dropbox\PC\Downloads\cibil\cibil_score\main_app\middleware\request_logging.py changed, reloading.
+INFO 2025-09-08 10:35:06,140 autoreload 17624 65000 C:\Users\DINESH\Dropbox\PC\Downloads\cibil\cibil_score\main_app\middleware\request_logging.py changed, reloading.
+INFO 2025-09-08 10:35:08,107 autoreload 45820 61312 Watching for file changes with StatReloader
+INFO 2025-09-08 10:35:08,231 autoreload 18268 6648 Watching for file changes with StatReloader
+INFO 2025-09-08 10:35:12,851 request_logging 45820 44016 Path: /auth_token/
+Method: POST
+Status Code: 200
+Duration: 0.02s
+Memory Used: 62.52 MB
+Bytes Sent: 203
+Bytes Received: 37
+---------------------
+INFO 2025-09-08 10:35:12,852 request_logging 45820 44016 "POST /auth_token/ HTTP/1.1" 200 203
+INFO 2025-09-08 10:35:12,853 basehttp 45820 44016 "POST /auth_token/ HTTP/1.1" 200 203
+INFO 2025-09-08 10:35:37,911 request_logging 18268 52968 Path: /auth_token/
+Method: POST
+Status Code: 200
+Duration: 0.03s
+Memory Used: 62.46 MB
+Bytes Sent: 203
+Bytes Received: 37
+---------------------
+INFO 2025-09-08 10:35:37,911 request_logging 18268 52968 "POST /auth_token/ HTTP/1.1" 200 203
+INFO 2025-09-08 10:35:37,912 basehttp 18268 52968 "POST /auth_token/ HTTP/1.1" 200 203
+INFO 2025-09-08 10:37:18,553 autoreload 18268 6648 C:\Users\DINESH\Dropbox\PC\Downloads\cibil\cibil_score\score_checker\settings.py changed, reloading.
+INFO 2025-09-08 10:37:19,226 autoreload 45820 61312 C:\Users\DINESH\Dropbox\PC\Downloads\cibil\cibil_score\score_checker\settings.py changed, reloading.
+INFO 2025-09-08 10:37:42,540 autoreload 32112 67256 Watching for file changes with StatReloader
+INFO 2025-09-08 10:37:47,413 autoreload 64520 47664 Watching for file changes with StatReloader
+INFO 2025-09-08 10:37:51,275 request_logging 32112 17636 Path: /auth_token/
+Method: POST
+Status Code: 200
+Duration: 0.02s
+Memory Used: 62.45 MB
+Bytes Sent: 203
+Bytes Received: 37
+---------------------
+INFO 2025-09-08 10:37:51,276 request_logging 32112 17636 "POST /auth_token/ HTTP/1.1" 200 203
+INFO 2025-09-08 10:37:51,277 basehttp 32112 17636 "POST /auth_token/ HTTP/1.1" 200 203
+INFO 2025-09-08 10:39:08,935 autoreload 32112 67256 C:\Users\DINESH\Dropbox\PC\Downloads\cibil\cibil_score\score_checker\settings.py changed, reloading.
+INFO 2025-09-08 10:39:09,173 autoreload 64520 47664 C:\Users\DINESH\Dropbox\PC\Downloads\cibil\cibil_score\score_checker\settings.py changed, reloading.
