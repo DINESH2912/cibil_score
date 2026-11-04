@@ -1,0 +1,10 @@
+
+BUG-001: Remove hardcoded Django SECRET_KEY and database credentials.
+BUG-002: Implement authentication and authorization for sensitive APIs.
+BUG-003: Enforce valid CIBIL score range between 300 and 900.
+BUG-004: Prevent division by zero during custom weight normalization.
+BUG-005: Correct credit utilization scoring thresholds.
+BUG-006: Include all supported loan types in credit mix calculation.
+BUG-007: Add proper validation to bulk customer data API.
+BUG-008: Prevent internal exception details from being exposed.
+BUG-009: Correct credit history calculation to use appropriate accounts.
