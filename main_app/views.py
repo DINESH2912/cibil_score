@@ -1,7 +1,7 @@
 # views.py
 from rest_framework import status, generics
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
@@ -23,17 +23,17 @@ from .cibil_calculator import DynamicCibilScoreCalculator  # Import the new calc
 class CustomerViewSet(generics.ListCreateAPIView):
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
 class CustomerDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
     lookup_field = 'pan_card_number'
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
 
 @api_view(['POST'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated])
 def check_dynamic_cibil_score(request):
     """
     Enhanced endpoint to check CIBIL score with custom weight percentages.
@@ -140,7 +140,7 @@ def check_dynamic_cibil_score(request):
 
     except Exception as e:
         return Response(
-            {'error': 'Failed to calculate dynamic CIBIL score', 'details': str(e)},
+            {'error': 'Failed to calculate dynamic CIBIL score'},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
 
@@ -167,7 +167,7 @@ def get_cibil_grade(score):
 
 # Alternative endpoint for backward compatibility
 @api_view(['POST'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated])
 def check_cibil_score(request):
     """
     Original endpoint - redirects to dynamic calculation with default weights
@@ -177,7 +177,7 @@ def check_cibil_score(request):
 
 
 @api_view(['GET'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated])
 def get_cibil_history(request, pan_card_number):
     """
     Get CIBIL score history for a customer
@@ -201,7 +201,7 @@ def get_cibil_history(request, pan_card_number):
 
 class BankAccountViewSet(generics.ListCreateAPIView):
     serializer_class = BankAccountSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
     
     def get_queryset(self):
         pan_card_number = self.kwargs.get('pan_card_number')
@@ -212,7 +212,7 @@ class BankAccountViewSet(generics.ListCreateAPIView):
 
 class CreditCardViewSet(generics.ListCreateAPIView):
     serializer_class = CreditCardSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
     
     def get_queryset(self):
         pan_card_number = self.kwargs.get('pan_card_number')
@@ -223,7 +223,7 @@ class CreditCardViewSet(generics.ListCreateAPIView):
 
 class LoanViewSet(generics.ListCreateAPIView):
     serializer_class = LoanSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
     
     def get_queryset(self):
         pan_card_number = self.kwargs.get('pan_card_number')
@@ -234,7 +234,7 @@ class LoanViewSet(generics.ListCreateAPIView):
 
 class PaymentHistoryViewSet(generics.ListCreateAPIView):
     serializer_class = PaymentHistorySerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
     
     def get_queryset(self):
         pan_card_number = self.kwargs.get('pan_card_number')
@@ -245,7 +245,7 @@ class PaymentHistoryViewSet(generics.ListCreateAPIView):
 
 
 @api_view(['POST'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated])
 def add_customer_data(request):
     """
     Bulk add customer financial data
@@ -254,6 +254,8 @@ def add_customer_data(request):
         with transaction.atomic():
             # Extract customer data
             customer_data = request.data.get('customer')
+            if not customer_data or 'pan_card_number' not in customer_data:
+                return Response({'error': 'Valid customer data with pan_card_number required'}, status=status.HTTP_400_BAD_REQUEST)
             bank_accounts = request.data.get('bank_accounts', [])
             credit_cards = request.data.get('credit_cards', [])
             loans = request.data.get('loans', [])
@@ -292,12 +294,11 @@ def add_customer_data(request):
             
     except Exception as e:
         return Response({
-            'error': 'Failed to add customer data',
-            'details': str(e)
+            'error': 'Failed to add customer data'
         }, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated])
 def customer_dashboard(request, pan_card_number):
     """
     Get complete customer dashboard with all financial information
@@ -326,7 +327,7 @@ def customer_dashboard(request, pan_card_number):
             'summary': {
                 'total_bank_accounts': bank_accounts.count(),
                 'active_credit_cards': credit_cards.filter(is_active=True).count(),
-                'active_loans': loans.filter(status='ACTIVE').count(),
+                'active_loans': loans.filter(status=='ACTIVE').count(),
                 'total_credit_limit': float(total_credit_limit),
                 'total_credit_used': float(total_credit_used),
                 'credit_utilization_ratio': round(utilization_ratio, 2),
