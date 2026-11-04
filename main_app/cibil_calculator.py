@@ -28,8 +28,8 @@ class DynamicCibilScoreCalculator:
             self.score_factors = self.default_score_factors.copy()
         
         # Dynamic score range - adapts based on credit profile
-        self.base_min_score = 200
-        self.base_max_score = 1000
+        self.base_min_score = 300
+        self.base_max_score = 900
     
     def _validate_and_normalize_weights(self, custom_weights):
         """
@@ -50,7 +50,7 @@ class DynamicCibilScoreCalculator:
         
         # Normalize to ensure sum equals 1.0
         total_weight = sum(normalized_weights.values())
-        if total_weight != 1.0:
+        if total_weight > 0 and total_weight != 1.0:
             for key in normalized_weights:
                 normalized_weights[key] = normalized_weights[key] / total_weight
         
@@ -176,18 +176,16 @@ class DynamicCibilScoreCalculator:
         # Enhanced scoring with more granular levels
         if utilization_ratio <= 0.05:
             return 95.0  # Very low usage
-        elif utilization_ratio <= 0.10:
-            return 100.0  # Sweet spot
         elif utilization_ratio <= 0.30:
-            return 85.0
+            return 100.0  # Sweet spot
         elif utilization_ratio <= 0.50:
-            return 65.0
+            return 85.0
         elif utilization_ratio <= 0.70:
-            return 45.0
+            return 65.0
         elif utilization_ratio <= 0.90:
-            return 25.0
+            return 45.0
         else:
-            return 10.0
+            return 25.0
     
     def _calculate_credit_history_length_score(self):
         """
@@ -196,15 +194,12 @@ class DynamicCibilScoreCalculator:
         # Get oldest credit account
         oldest_loan = Loan.objects.filter(customer=self.customer).order_by('loan_start_date').first()
         oldest_card = CreditCard.objects.filter(customer=self.customer).order_by('card_issued_date').first()
-        oldest_account = BankAccount.objects.filter(customer=self.customer).order_by('account_opened_date').first()
         
         oldest_dates = []
         if oldest_loan:
             oldest_dates.append(oldest_loan.loan_start_date)
         if oldest_card:
             oldest_dates.append(oldest_card.card_issued_date)
-        if oldest_account:
-            oldest_dates.append(oldest_account.account_opened_date)
         
         if not oldest_dates:
             return 30.0  # Low score if no credit history
@@ -254,6 +249,10 @@ class DynamicCibilScoreCalculator:
         if 'CAR_LOAN' in loan_types:
             credit_mix_score += 15
         if 'PERSONAL_LOAN' in loan_types:
+            credit_mix_score += 10
+        if 'EDUCATION_LOAN' in loan_types:
+            credit_mix_score += 15
+        if 'BUSINESS_LOAN' in loan_types:
             credit_mix_score += 10
         
         return min(100.0, credit_mix_score)
@@ -329,8 +328,8 @@ class DynamicCibilScoreCalculator:
         # Calculate dynamic min and max
         range_expansion = (self.base_max_score - self.base_min_score) * (range_multiplier - 1)
         
-        dynamic_min = max(150, int(self.base_min_score - range_expansion/2))
-        dynamic_max = min(1200, int(self.base_max_score + range_expansion/2))
+        dynamic_min = max(300, int(self.base_min_score - range_expansion/2))
+        dynamic_max = min(900, int(self.base_max_score + range_expansion/2))
         
         return {
             'min_score': dynamic_min,
@@ -519,15 +518,12 @@ class DynamicCibilScoreCalculator:
         """Get credit history age in years"""
         oldest_loan = Loan.objects.filter(customer=self.customer).order_by('loan_start_date').first()
         oldest_card = CreditCard.objects.filter(customer=self.customer).order_by('card_issued_date').first()
-        oldest_account = BankAccount.objects.filter(customer=self.customer).order_by('account_opened_date').first()
         
         oldest_dates = []
         if oldest_loan:
             oldest_dates.append(oldest_loan.loan_start_date)
         if oldest_card:
             oldest_dates.append(oldest_card.card_issued_date)
-        if oldest_account:
-            oldest_dates.append(oldest_account.account_opened_date)
         
         if oldest_dates:
             oldest_date = min(oldest_dates)
